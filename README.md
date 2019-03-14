@@ -1,17 +1,16 @@
-toutes ces commands sont éxecutables sauf apres la ligne tirets.
-
-
+#!/bin/bash
 yum install epel-release -y
 yum install fail2ban -y
 systemctl restart fail2ban
 mkdir conf-Fail2ban
 cd conf-Fail2ban
-wget https://github.com/leogallego/fail2ban-zimbra/archive/master.zip
+#wget https://github.com/leogallego/fail2ban-zimbra/archive/master.zip
+wget https://github.com/madrugre/zimbra-fail2ban/archive/master.zip
 unzip master.zip
 cd fail2ban-zimbra-master/
 \cp -fr action.d/* /etc/fail2ban/action.d/
 
-dans /etc/fail2ban/action.d/iptables-allports.conf
+#dans /etc/fail2ban/action.d/iptables-allports.conf
 sed -i 's/actionban = iptables -I fail2ban-<name> 1 -s <ip> -j <blocktype>/actionban = iptables -I fail2ban-<name> 1 -s <ip> -j DROP/g' /etc/fail2ban/action.d/iptables-allports.conf
 \cp -rf filter.d/* /etc/fail2ban/filter.d/
 
@@ -103,14 +102,14 @@ EOT
 cat jail.d/zimbra.conf >> /etc/fail2ban/jail.local
 sed -i 's/bantime = 7200/bantime = 86400/g' /etc/fail2ban/jail.local
 sed -i 's/maxretry = 5/maxretry = 3/g' /etc/fail2ban/jail.local
-cat /etc/fail2ban/filter.d/zimbra.conf | grep -v "NOQUEUE: reject: RCPT from" > /etc/fail2ban/filter.d/zimbra.conf
 systemctl enable fail2ban
 systemctl start fail2ban
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Dans /etc/fail2ban/filter.d/zimbra.conf
-modifier les regex : 
+------------------------------------------------------------------------------------
+
+Dans /etc/fail2ban/filter.d/zimbra.conf les regex doient ressembler à ceci :
+
 failregex =     \[ip=<HOST>;\] account – authentication failed for .* \(no such account\)$
                 \[ip=<HOST>;\] security – cmd=Auth; .* error=authentication failed for .*, invalid password;$
                 \[ip=<HOST>;\] security – cmd=AdminAuth; .* error=authentication failed for .*, invalid password;$
@@ -123,5 +122,7 @@ failregex =     \[ip=<HOST>;\] account – authentication failed for .* \(no suc
                 WARN  \[.*\] \[name=.*;ip=<HOST>;ua=.*;\] security - cmd=Auth; account=.*; protocol=.*; error=.*, invalid password;
                 INFO .*ip=<HOST>;ua=zclient.*\] .* authentication failed for \[.*\], (invalid password|account not found)+:
                 
-On rajoute "\[oip=<HOST>;.* SoapEngine – handler exception: authentication failed for .*, invalid password$"
-au milieu
+Se connecter avec zimbra ( su zimbra )
+Whitelister l'ip loopback et l'ip wan
+zmprov mcf +zimbraHttpThrottleSafeIPs 172.0.0.1/32
+zmprov mcf +zimbraHttpThrottleSafeIPs 192.168.168.168/32
