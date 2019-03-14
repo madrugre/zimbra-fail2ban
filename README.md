@@ -7,7 +7,7 @@ cd conf-Fail2ban
 #wget https://github.com/leogallego/fail2ban-zimbra/archive/master.zip
 wget https://github.com/madrugre/zimbra-fail2ban/archive/master.zip
 unzip master.zip
-cd fail2ban-zimbra-master/
+cd zimbra-fail2ban-master/
 \cp -fr action.d/* /etc/fail2ban/action.d/
 
 #dans /etc/fail2ban/action.d/iptables-allports.conf
@@ -124,5 +124,8 @@ failregex =     \[ip=<HOST>;\] account – authentication failed for .* \(no suc
                 
 Se connecter avec zimbra ( su zimbra )
 Whitelister l'ip loopback et l'ip wan
-zmprov mcf +zimbraHttpThrottleSafeIPs 172.0.0.1/32
-zmprov mcf +zimbraHttpThrottleSafeIPs 192.168.168.168/32
+zmprov mcf +zimbraHttpThrottleSafeIPs 172.0.0.1
+zmprov mcf +zimbraHttpThrottleSafeIPs 192.168.168.168
+zmprov mcf +zimbraMailTrustedIP 192.168.168.168
+zmprov mcf +zimbraMailTrustedIP 127.0.0.1
+zmmailboxdctl restart
