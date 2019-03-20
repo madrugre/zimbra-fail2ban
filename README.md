@@ -100,7 +100,7 @@ action = %(action_)s
 EOT
 
 cat jail.d/zimbra.conf >> /etc/fail2ban/jail.local
-sed -i 's/bantime = 7200/bantime = 86400/g' /etc/fail2ban/jail.local
+sed -i 's/bantime = 7200/bantime = -1/g' /etc/fail2ban/jail.local
 sed -i 's/maxretry = 5/maxretry = 3/g' /etc/fail2ban/jail.local
 systemctl enable fail2ban
 systemctl start fail2ban
@@ -125,7 +125,7 @@ failregex =     \[ip=<HOST>;\] account – authentication failed for .* \(no suc
 Se connecter avec zimbra ( su zimbra )
 Whitelister l'ip loopback et l'ip wan
 zmprov mcf +zimbraHttpThrottleSafeIPs 172.0.0.1
-zmprov mcf +zimbraHttpThrottleSafeIPs 192.168.168.168
-zmprov mcf +zimbraMailTrustedIP 192.168.168.168
+zmprov mcf +zimbraHttpThrottleSafeIPs x.x.x.x
+zmprov mcf +zimbraMailTrustedIP x.x.x.x
 zmprov mcf +zimbraMailTrustedIP 127.0.0.1
 zmmailboxdctl restart
