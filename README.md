@@ -20,7 +20,7 @@ cat <<EOT  >> /etc/fail2ban/jail.local
 # "ignoreip" can be an IP address, a CIDR mask or a DNS host. Fail2ban will not
 # ban a host which matches an address in this list. Several addresses can be
 # defined using space separator.
-ignoreip = 127.0.0.1/8
+ignoreip = 127.0.0.1/8 91.151.65.10/32 94.185.
 
 # "bantime" is the number of seconds that a host is banned.
 bantime  = 86400
